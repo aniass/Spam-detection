@@ -2,7 +2,7 @@
 
 ## General info
 
-The project concerns spam detection in SMS messages to  determined whether the messages is spam or not. It includes data analysis, data preparation, text mining and create model by using virtue different machine learning algorithms and **BERT model**. 
+The project concerns spam detection in SMS messages to  determined whether the messages is spam or not. It includes data analysis, data preparation, text mining and create model by using different machine learning algorithms and **BERT model**. 
 
 ## The data
 The dataset comes from SMS Spam Collection and can be find [here](https://www.kaggle.com/uciml/sms-spam-collection-dataset). This SMS Spam Collection is a set of SMS tagged messages that have been collected for SMS Spam research. It comprises one set of SMS messages in English of 5,574 messages, which is tagged acording being ham (legitimate) or spam.
