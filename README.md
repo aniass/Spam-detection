@@ -20,15 +20,15 @@ We begin with data analysis and data pre-processing from our dataset. Following 
 In the second we have used a pretrained BERT model to resolve our problem. In our second analysis we have used a Huggingface Transformers library as well. We have used a simple neural network with pretrained BERT model. We achieved an accuracy on the test set equal to 98 % and it is a very good result in comparison to previous models. 
 From our experiments we can see that the both tested approaches give an overall high accuracy and similar results for our problem.
 
-Model | Accuracy
------------- | ------------- 
-**NN + BERT** | **0.98**
-Naive Bayes| 0.97
-Gradient Boosting| 0.96
-Logistic Regression |  0.96
-SVM |  0.94
-SGD | 0.94
-Random Forest |  0.92
+Model | Embeddings | Accuracy
+------------ | ------------- | ------------- 
+**BERT** | Bert tokenizer | **0.98**
+Naive Bayes| BOW | 0.97
+Gradient Boosting| BOW | 0.96
+Logistic Regression | BOW | 0.96
+SVM | BOW  | 0.94
+SGD |BOW  | 0.94
+Random Forest | BOW | 0.92
 
 ## Technologies
 #### The project is created with:
