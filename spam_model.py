@@ -16,6 +16,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
 
+URL = 'C:\\Python Scripts\\Datasets\\spam.csv'
+
 
 def clean_data(df):
     """Function to clean data"""
@@ -35,49 +37,53 @@ def text_preprocess(text):
     return " ".join(words)
 
 
-# Load dataset
-url = 'C:\\Python Scripts\\Datasets\\spam.csv'
-df = pd.read_csv(url, encoding='latin-1')
+def read_data(path):
+    ''' Function to read text data'''
+    data = pd.read_csv(path, encoding='latin-1')
+    dataset = clean_data(data)
+    dataset['Text'] = data['Text'].apply(text_preprocess)
+    X = dataset['Text']
+    y = dataset['Class']
+    return X, y
 
-clean_data(df)
 
-# shape
-print(df.shape)
-print(df.head())
+def prepare_data(X, y):
+    ''' Function to split data on train and test set '''
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+                                                        random_state=42)
+    return X_train, X_test, y_train, y_test
 
-# Separate into input and output columns
-X = df['Text']
-y = df['Class']
 
-# Split the dataset into train and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
-                                                    random_state=0)
-
-# Create models
-models = pd.DataFrame()
-
-classifiers = [
-    LogisticRegression(),
-    MultinomialNB(),
-    RandomForestClassifier(n_estimators=50),
-    GradientBoostingClassifier(random_state=100, n_estimators=150,
+def create_models(X_train, X_test, y_train, y_test):
+    ''' Calculating models with score '''
+    models = pd.DataFrame()
+    classifiers = [
+        LogisticRegression(),
+        MultinomialNB(),
+        RandomForestClassifier(n_estimators=50),
+        GradientBoostingClassifier(random_state=100, n_estimators=150,
                                min_samples_split=100, max_depth=6),
-    LinearSVC(),
-    SGDClassifier()
-    ]
+        LinearSVC(),
+        SGDClassifier()]
 
-for classifier in classifiers:
-    pipe = Pipeline(steps=[('vect', CountVectorizer(
-            tokenizer=text_preprocess, min_df=5, ngram_range=(1, 2))),
-                          ('tfidf', TfidfTransformer()),
-                          ('classifier', classifier)])
-    pipe.fit(X_train, y_train)
-    score = pipe.score(X_test, y_test)
-    param_dict = {
-                  'Model': classifier.__class__.__name__,
-                  'Score': score
-                  }
-    models = models.append(pd.DataFrame(param_dict, index=[0]))
+    for classifier in classifiers:
+        pipeline = Pipeline(steps=[('vect', CountVectorizer(
+                            min_df=5, ngram_range=(1, 2))),
+                                   ('tfidf', TfidfTransformer()),
+                                   ('classifier', classifier)])
+        pipeline.fit(X_train, y_train)
+        score = pipeline.score(X_test, y_test)
+        param_dict = {
+                      'Model': classifier.__class__.__name__,
+                      'Score': score
+                     }
+        models = models.append(pd.DataFrame(param_dict, index=[0]))
 
-models.reset_index(drop=True, inplace=True)
-print(models.sort_values(by='Score', ascending=False))
+    models.reset_index(drop=True, inplace=True)
+    print(models.sort_values(by='Score', ascending=False))
+
+
+if __name__ == '__main__':
+    X, y = read_data(URL)
+    X_train, X_test, y_train, y_test = prepare_data(X, y)
+    create_models(X_train, X_test, y_train, y_test)
