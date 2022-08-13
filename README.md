@@ -41,3 +41,9 @@ Random Forest | BOW | 0.92
 #### Running the project:
 
 To run this project use Jupyter Notebook or Google Colab.
+
+You can run the scripts in the terminal:
+
+    spam_model.py
+    spam_smote_model.py
+
