@@ -15,6 +15,7 @@ The aim of the project is spam detection in SMS messages. One of the way to redu
 - Spam classification with BERT model - **Spam_bert.ipynb**
 - Python script to use spam model - **spam_model.py**
 - Python script to use spam model with smote method - **spam_smote_model.py**
+- Python script to use spam model with BERT - **spam_bert.py**
 
 ## Summary
 We begin with data analysis and data pre-processing from our dataset. Following we used NLP methods to prepare and clean our text data (tokenization, remove stop words, stemming). In the first approach we used bag of words model to convert the text into numerical feature vectors. To get more accurate predictions we have applied six different classification algorithms like: Logistic Regression, Naive Bayes, Support Vector Machine (SVM), Random Forest, Stochastic Gradient Descent and Gradient Boosting. Finally we got the best accuracy of 97 % for Naive Bayes method. 
@@ -46,4 +47,5 @@ You can run the scripts in the terminal:
 
     spam_model.py
     spam_smote_model.py
+    spam_bert.py
 
