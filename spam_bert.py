@@ -16,7 +16,7 @@ nltk.download('stopwords')
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
 
-URL = 'C:\\Python Scripts\\Datasets\\spam.csv'
+URL = 'data\spam.csv'
 
 # models
 tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')

@@ -20,7 +20,7 @@ warnings.filterwarnings("ignore",category =RuntimeWarning)
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
 
-URL = 'C:\\Python Scripts\\Datasets\\spam.csv'
+URL = '\data\spam.csv'
 
 
 def clean_data(df):
