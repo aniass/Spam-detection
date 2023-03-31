@@ -13,6 +13,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import SGDClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+import warnings
+warnings.filterwarnings("ignore",category =RuntimeWarning)
 
 
 stop_words = stopwords.words('english')
