@@ -12,11 +12,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import SGDClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+import warnings
+warnings.filterwarnings("ignore",category=RuntimeWarning)
+
 
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
 
-URL = '\Data\spam.csv'
+URL = '\data\spam.csv'
 
 
 def clean_data(df):
@@ -39,16 +42,16 @@ def text_preprocess(text):
 
 def read_data(path):
     ''' Function to read text data'''
-    data = pd.read_csv(path, encoding='latin-1')
-    dataset = clean_data(data)
-    dataset['Text'] = data['Text'].apply(text_preprocess)
-    X = dataset['Text']
-    y = dataset['Class']
-    return X, y
+    df = pd.read_csv(path, encoding='latin-1')
+    data = clean_data(df)
+    data['Text'] = data['Text'].apply(text_preprocess)
+    return data
 
 
-def prepare_data(X, y):
+def splitting_data(data):
     ''' Function to split data on train and test set '''
+    X = data['Text']
+    y = data['Class']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test
@@ -84,6 +87,6 @@ def create_models(X_train, X_test, y_train, y_test):
 
 
 if __name__ == '__main__':
-    X, y = read_data(URL)
-    X_train, X_test, y_train, y_test = prepare_data(X, y)
-    create_models(X_train, X_test, y_train, y_test)
+   df = read_data(URL)
+   X_train, X_test, y_train, y_test = splitting_data(df)
+   create_models(X_train, X_test, y_train, y_test)
