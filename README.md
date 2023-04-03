@@ -26,12 +26,12 @@ From our experiments we can see that the both tested approaches give an overall 
 Model | Embeddings | Accuracy
 ------------ | ------------- | ------------- 
 **BERT** | Bert tokenizer | **0.98**
-Naive Bayes| BOW | 0.97
-Gradient Boosting| BOW | 0.96
-Logistic Regression | BOW | 0.96
-SVM | BOW  | 0.94
-SGD |BOW  | 0.94
-Random Forest | BOW | 0.92
+LinearSVC| BOW | 0.98
+SGD |BOW  | 0.98
+Random Forest | BOW | 0.98
+Logistic Regression | BOW | 0.97
+Gradient Boosting| BOW | 0.97
+Naive Bayes | BOW | 0.95
 
 ## Technologies
 #### The project is created with:
