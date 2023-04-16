@@ -2,10 +2,10 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from joblib import load
 import warnings
-warnings.filterwarnings("ignore",category =RuntimeWarning)
+warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 
-MODELSPATH = 'C:\Python Scripts\Projects_done\Spam\spam_best_model.pkl'
+MODELSPATH = 'models\spam_best_model.pkl'
 
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
@@ -35,7 +35,6 @@ def get_prediction(input_text):
         prediction = 'spam'
     else:
         prediction = 'not spam'
-    print('---------------')
     print(f'Your message is {prediction}')
 
 
