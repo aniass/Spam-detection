@@ -5,7 +5,7 @@ import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 
-MODELSPATH = 'models\spam_best_model.pkl'
+MODELS_PATH = 'models\spam_best_model.pkl'
 
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
@@ -13,7 +13,7 @@ porter = PorterStemmer()
 
 def load_model():
     '''Loading pretrained model'''
-    with open(MODELSPATH, 'rb') as file:
+    with open(MODELS_PATH, 'rb') as file:
         model = load(file)
         return model
     
@@ -29,13 +29,13 @@ def get_prediction(input_text):
     ''' Generating predictions from raw data'''
     model = load_model()
     data = [input_text]
-    text =  preprocess_data(data)
-    result = model.predict(text)
-    if result == 1:
-        prediction = 'spam'
+    processed_text =  preprocess_data(data)
+    prediction = model.predict(processed_text)
+    if prediction == 1:
+        result = 'spam'
     else:
-        prediction = 'not spam'
-    print(f'Your message is {prediction}')
+        result = 'not spam'
+    print(f'Your message is {result}')
 
 
 if __name__ == '__main__':
