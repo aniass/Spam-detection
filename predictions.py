@@ -9,10 +9,14 @@ MODELS_PATH = 'models\spam_best_model.pkl'
 
 
 def load_model():
-    '''Loading pretrained model'''
-    with open(MODELS_PATH, 'rb') as file:
-        model = load(file)
+    '''Load pretrained model'''
+    try:
+        with open(MODELS_PATH, 'rb') as file:
+            model = load(file)
         return model
+    except FileNotFoundError:
+        print(f"Error: The model file '{MODELS_PATH}' was not found.")
+        return None
     
 
 def preprocess_data(text):
