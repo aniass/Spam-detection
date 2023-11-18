@@ -7,9 +7,6 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 MODELS_PATH = 'models\spam_best_model.pkl'
 
-stop_words = stopwords.words('english')
-porter = PorterStemmer()
-
 
 def load_model():
     '''Loading pretrained model'''
@@ -20,8 +17,9 @@ def load_model():
 
 def preprocess_data(text):
     ''' Applying stopwords and stemming on raw data'''
-    words = [word.lower() for word in text if word.lower() not in stop_words]
-    words = [porter.stem(word) for word in words]
+    stop_words = set(stopwords.words('english'))
+    porter = PorterStemmer()
+    words = [porter.stem(word.lower()) for word in text if word.lower() not in stop_words]
     return words
 
 
