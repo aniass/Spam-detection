@@ -19,6 +19,16 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 URL_DATA = '\data\spam.csv'
 
 
+def read_data(path: str) -> pd.DataFrame:
+    """Function to read data"""
+    try:
+        df = pd.read_csv(path, header=0, index_col=0)
+        return df
+    except Exception as e:
+        print(f"Error loading data: {str(e)}")
+        return pd.DataFrame()
+
+
 def clean_data(df):
     """Function to clean data"""
     df.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1, inplace=True)
@@ -39,12 +49,6 @@ def text_preprocess(text):
     porter = PorterStemmer()
     words = [porter.stem(word) for word in words]
     return " ".join(words)
-
-
-def read_data(path):
-    ''' Function to read text data'''
-    df = pd.read_csv(path, encoding='latin-1')
-    return df
 
 
 def splitting_data(df):
@@ -71,20 +75,26 @@ def create_models(X_train, X_test, y_train, y_test):
         SGDClassifier()]
 
     for classifier in classifiers:
-        pipeline = Pipeline(steps=[('vect', CountVectorizer(
-                            min_df=5, ngram_range=(1, 2))),
-                                   ('tfidf', TfidfTransformer()),
-                                   ('classifier', classifier)])
-        pipeline.fit(X_train, y_train)
-        score = pipeline.score(X_test, y_test)
-        param_dict = {
+        try:
+            pipeline = Pipeline(steps=[
+                    ('vect', CountVectorizer(min_df=5, ngram_range=(1, 2))),
+                    ('tfidf', TfidfTransformer()),
+                    ('classifier', classifier)
+            ])
+            pipeline.fit(X_train, y_train)
+            score = pipeline.score(X_test, y_test)
+            param_dict = {
                       'Model': classifier.__class__.__name__,
                       'Score': score
-                     }
-        models = models.append(pd.DataFrame(param_dict, index=[0]))
+            }
+            models = models.append(pd.DataFrame(param_dict, index=[0]))
+        except Exception as e:
+            print(f"Error occurred while fitting {classifier.__class__.__name__}: {str(e)}")
 
     models.reset_index(drop=True, inplace=True)
-    print(models.sort_values(by='Score', ascending=False))
+    models_sorted = models.sort_values(by='Score', ascending=False)
+    print(models_sorted)
+    return models_sorted
 
 
 if __name__ == '__main__':
