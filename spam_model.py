@@ -29,7 +29,7 @@ def read_data(path: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def clean_data(df):
+def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """Function to clean data"""
     df.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1, inplace=True)
     df.rename(columns={'v1': 'Class', 'v2': 'Text'}, inplace=True)
@@ -37,7 +37,7 @@ def clean_data(df):
     return df
 
 
-def text_preprocess(text):
+def text_preprocess(text: str)  -> str:
     ''' Function to remove punctuation, stopwords and apply stemming'''
     # remove punctuation
     words = re.sub("[^a-zA-Z]", " ", text)
@@ -51,7 +51,7 @@ def text_preprocess(text):
     return " ".join(words)
 
 
-def splitting_data(df):
+def splitting_data(df: pd.DataFrame):
     ''' Function to split data on train and test set '''
     data = clean_data(df)
     data['Text'] = data['Text'].apply(text_preprocess)
@@ -62,7 +62,7 @@ def splitting_data(df):
     return X_train, X_test, y_train, y_test
 
 
-def create_models(X_train, X_test, y_train, y_test):
+def create_models(X_train, X_test, y_train, y_test) -> pd.DataFrame:
     ''' Calculating models with score '''
     models = pd.DataFrame()
     classifiers = [
