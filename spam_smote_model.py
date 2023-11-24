@@ -17,10 +17,7 @@ import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 
-stop_words = stopwords.words('english')
-porter = PorterStemmer()
-
-URL = '\data\spam.csv'
+URL_DATA = '\data\spam.csv'
 
 
 def clean_data(df):
@@ -31,12 +28,16 @@ def clean_data(df):
     return df
 
 
-def text_preprocess(text):
-    ''' The function to remove punctuation,
-    stopwords and apply stemming'''
+def text_preprocess(text: str)  -> str:
+    ''' Function to remove punctuation, stopwords and apply stemming'''
+    # remove punctuation
     words = re.sub("[^a-zA-Z]", " ", text)
+    # remove stopwords
+    stop_words = stopwords.words('english')
     words = [word.lower() for word in words.split() if word.lower()
              not in stop_words]
+    # apply Stemming
+    porter = PorterStemmer()
     words = [porter.stem(word) for word in words]
     return " ".join(words)
 
@@ -44,13 +45,13 @@ def text_preprocess(text):
 def read_data(path):
     ''' Function to read text data'''
     df = pd.read_csv(path, encoding='latin-1')
+    return df
+
+
+def splitting_data(df):
+    ''' Function to split data on train and test set '''
     data = clean_data(df)
     data['Text'] = data['Text'].apply(text_preprocess)
-    return data
-
-
-def splitting_data(data):
-    ''' Function to split data on train and test set '''
     X = data['Text']
     y = data['Class']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
@@ -89,6 +90,6 @@ def create_models(X_train, X_test, y_train, y_test):
    
 
 if __name__ == '__main__':
-    df = read_data(URL)
+    df = read_data(URL_DATA)
     X_train, X_test, y_train, y_test = splitting_data(df)
     create_models(X_train, X_test, y_train, y_test)
