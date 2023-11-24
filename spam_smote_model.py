@@ -20,7 +20,13 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 URL_DATA = '\data\spam.csv'
 
 
-def clean_data(df):
+def read_data(path: str) -> pd.DataFrame:
+    ''' Function to read text data'''
+    df = pd.read_csv(path, encoding='latin-1')
+    return df
+
+
+def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """Function to clean data"""
     df.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1, inplace=True)
     df.rename(columns={'v1': 'Class', 'v2': 'Text'}, inplace=True)
@@ -42,13 +48,7 @@ def text_preprocess(text: str)  -> str:
     return " ".join(words)
 
 
-def read_data(path):
-    ''' Function to read text data'''
-    df = pd.read_csv(path, encoding='latin-1')
-    return df
-
-
-def splitting_data(df):
+def splitting_data(df: pd.DataFrame):
     ''' Function to split data on train and test set '''
     data = clean_data(df)
     data['Text'] = data['Text'].apply(text_preprocess)
@@ -59,7 +59,7 @@ def splitting_data(df):
     return X_train, X_test, y_train, y_test
 
 
-def create_models(X_train, X_test, y_train, y_test):
+def create_models(X_train, X_test, y_train, y_test) -> pd.DataFrame:
     ''' Calculating models with score '''
     models = pd.DataFrame()
     classifiers = [
