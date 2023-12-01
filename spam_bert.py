@@ -18,6 +18,8 @@ porter = PorterStemmer()
 
 URL = 'data\spam.csv'
 
+EPOCHS = 5
+
 tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
 
 
@@ -75,29 +77,30 @@ def encode(text, maxlen):
 
 
 def build_model(input_shape=(64,), dense_units=32, dropout_rate=0.2):
-     ''' Creating model using BERT'''
-     bert_model = TFBertModel.from_pretrained('bert-base-uncased')
-     input_word_ids = tf.keras.Input(shape=input_shape,dtype='int32')
-     attention_masks = tf.keras.Input(shape=input_shape,dtype='int32')
+    ''' Creating model using BERT'''
+    bert_model = TFBertModel.from_pretrained('bert-base-uncased')
+    input_word_ids = tf.keras.Input(shape=input_shape,dtype='int32')
+    attention_masks = tf.keras.Input(shape=input_shape,dtype='int32')
 
-     sequence_output = bert_model([input_word_ids,attention_masks])
-     output = sequence_output[1]
-     output = tf.keras.layers.Dense(dense_units,activation='relu')(output)
-     output = tf.keras.layers.Dropout(dropout_rate)(output)
-     output = tf.keras.layers.Dense(1,activation='sigmoid')(output)
+    sequence_output = bert_model([input_word_ids,attention_masks])
+    output = sequence_output[1]
+    output = tf.keras.layers.Dense(dense_units,activation='relu')(output)
+    output = tf.keras.layers.Dropout(dropout_rate)(output)
+    output = tf.keras.layers.Dense(1,activation='sigmoid')(output)
 
-     model = tf.keras.models.Model(inputs = [input_word_ids,attention_masks], outputs = output)
-     model.compile(Adam(lr=1e-5), loss='binary_crossentropy', metrics=['accuracy'])
-     return model
+    model = tf.keras.models.Model(inputs = [input_word_ids,attention_masks], outputs = output)
+    model.compile(Adam(lr=1e-5), loss='binary_crossentropy', metrics=['accuracy'])
+    return model
 
 
-def train_model(model, X_train_input_ids, X_train_attention_masks):
+def train_model(model, X_train_input_ids, X_train_attention_masks, X_test_input_ids, 
+                X_test_attention_masks, y_train, y_test):
     '''Function to train the model for 5 epoch '''
     history = model.fit(
         [X_train_input_ids, X_train_attention_masks],
         y_train,
         batch_size=32,
-        epochs=5,
+        epochs=EPOCHS,
         validation_data=([X_test_input_ids, X_test_attention_masks], y_test),
         class_weight= {0: 1, 1: 8})
     return history
@@ -113,19 +116,21 @@ def plot_graphs(history, string):
     plt.show()
   
 
-def get_prediction(model):
+def get_prediction(model, X_test_input_ids, X_test_attention_masks, y_test):
     '''Function to get predictions on a test set '''
     loss, accuracy = model.evaluate([X_test_input_ids, X_test_attention_masks], y_test)
     print('Test accuracy :', accuracy)
+    return accuracy
     
 
 if __name__ == '__main__':
     data = read_data(URL)
     X_train, X_test, y_train, y_test = prepare_data(data)
-    X_train_input_ids, X_train_attention_masks = encode(X_train.values, maxlen=64)
-    X_test_input_ids, X_test_attention_masks = encode(X_test.values, maxlen=64)
+    X_train_input_ids, X_train_attention_masks = encode(X_train.values)
+    X_test_input_ids, X_test_attention_masks = encode(X_test.values)
     model = build_model()
-    history = train_model(model, X_train_input_ids, X_train_attention_masks)
-    print(plot_graphs(history, "accuracy"))
-    print(plot_graphs(history, "loss"))
-    print(get_prediction(model))
+    history = train_model(model, X_train_input_ids, X_train_attention_masks,
+                          X_test_input_ids, X_test_attention_masks, y_train, y_test)
+    plot_graphs(history, "accuracy")
+    plot_graphs(history, "loss")
+    get_prediction(model, X_test_input_ids, X_test_attention_masks, y_test)
