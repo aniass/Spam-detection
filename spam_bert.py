@@ -18,9 +18,7 @@ porter = PorterStemmer()
 
 URL = 'data\spam.csv'
 
-# models
 tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
-bert_model = TFBertModel.from_pretrained('bert-base-uncased')
 
 
 def clean_data(df):
@@ -46,13 +44,13 @@ def read_data(path):
     data = pd.read_csv(path, encoding='latin-1')
     dataset = clean_data(data)
     dataset['Text'] = data['Text'].apply(text_preprocess)
-    X = dataset['Text']
-    y = dataset['Class']
-    return X, y
+    return dataset
 
 
-def prepare_data(X, y):
+def prepare_data(data):
     ''' Function to split data on train and test set '''
+    X = data['Text']
+    y = data['Class']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test
@@ -76,20 +74,21 @@ def encode(text, maxlen):
     return np.array(input_ids),np.array(attention_masks)
 
 
-def build_model(bert_model):
-    ''' Creating model using BERT '''
-    input_word_ids = tf.keras.Input(shape=(64,),dtype='int32')
-    attention_masks = tf.keras.Input(shape=(64,),dtype='int32')
+def build_model(input_shape=(64,), dense_units=32, dropout_rate=0.2):
+     ''' Creating model using BERT'''
+     bert_model = TFBertModel.from_pretrained('bert-base-uncased')
+     input_word_ids = tf.keras.Input(shape=input_shape,dtype='int32')
+     attention_masks = tf.keras.Input(shape=input_shape,dtype='int32')
 
-    sequence_output = bert_model([input_word_ids,attention_masks])
-    output = sequence_output[1]
-    output = tf.keras.layers.Dense(32,activation='relu')(output)
-    output = tf.keras.layers.Dropout(0.2)(output)
-    output = tf.keras.layers.Dense(1,activation='sigmoid')(output)
+     sequence_output = bert_model([input_word_ids,attention_masks])
+     output = sequence_output[1]
+     output = tf.keras.layers.Dense(dense_units,activation='relu')(output)
+     output = tf.keras.layers.Dropout(dropout_rate)(output)
+     output = tf.keras.layers.Dense(1,activation='sigmoid')(output)
 
-    model = tf.keras.models.Model(inputs = [input_word_ids,attention_masks], outputs = output)
-    model.compile(Adam(lr=1e-5), loss='binary_crossentropy', metrics=['accuracy'])
-    return model
+     model = tf.keras.models.Model(inputs = [input_word_ids,attention_masks], outputs = output)
+     model.compile(Adam(lr=1e-5), loss='binary_crossentropy', metrics=['accuracy'])
+     return model
 
 
 def train_model(model, X_train_input_ids, X_train_attention_masks):
@@ -121,11 +120,11 @@ def get_prediction(model):
     
 
 if __name__ == '__main__':
-    X, y = read_data(URL)
-    X_train, X_test, y_train, y_test = prepare_data(X, y)
+    data = read_data(URL)
+    X_train, X_test, y_train, y_test = prepare_data(data)
     X_train_input_ids, X_train_attention_masks = encode(X_train.values, maxlen=64)
     X_test_input_ids, X_test_attention_masks = encode(X_test.values, maxlen=64)
-    model = build_model(bert_model)
+    model = build_model()
     history = train_model(model, X_train_input_ids, X_train_attention_masks)
     print(plot_graphs(history, "accuracy"))
     print(plot_graphs(history, "loss"))
