@@ -16,7 +16,7 @@ import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 
-URL_DATA = '\data\spam.csv'
+URL_DATA = 'data\spam.csv'
 
 
 def read_data(path: str) -> pd.DataFrame:
@@ -38,7 +38,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def text_preprocess(text: str)  -> str:
-    ''' Function to remove punctuation, stopwords and apply stemming'''
+    """Function to remove punctuation, stopwords and apply stemming"""
     # remove punctuation
     words = re.sub("[^a-zA-Z]", " ", text)
     # remove stopwords
@@ -52,7 +52,7 @@ def text_preprocess(text: str)  -> str:
 
 
 def splitting_data(df: pd.DataFrame):
-    ''' Function to split data on train and test set '''
+    """Function to split data on train and test set"""
     data = clean_data(df)
     data['Text'] = data['Text'].apply(text_preprocess)
     X = data['Text']
@@ -63,7 +63,7 @@ def splitting_data(df: pd.DataFrame):
 
 
 def create_models(X_train, X_test, y_train, y_test) -> pd.DataFrame:
-    ''' Calculating models with score '''
+    """Calculating models with score"""
     models = pd.DataFrame()
     classifiers = [
         LogisticRegression(),
