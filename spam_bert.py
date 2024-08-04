@@ -15,14 +15,13 @@ from transformers import BertTokenizer, TFBertModel
 nltk.download('stopwords')
 stop_words = stopwords.words('english')
 porter = PorterStemmer()
+tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
 
 URL = 'data\spam.csv'
 
 # Constants
 MAXLEN = 64
 EPOCHS = 5
-
-tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
 
 
 def clean_data(df):
@@ -34,7 +33,7 @@ def clean_data(df):
 
 
 def text_preprocess(text):
-    ''' The function to remove punctuation, stopwords and apply stemming'''
+    """The function to remove punctuation, stopwords and apply stemming"""
     words = re.sub("[^a-zA-Z]", " ", text)
     words = [word.lower() for word in words.split() if word.lower()
              not in stop_words]
@@ -43,7 +42,7 @@ def text_preprocess(text):
 
 
 def read_data(path):
-    ''' Function to read text data'''
+    """Function to read text data"""
     data = pd.read_csv(path, encoding='latin-1')
     dataset = clean_data(data)
     dataset['Text'] = data['Text'].apply(text_preprocess)
@@ -51,7 +50,7 @@ def read_data(path):
 
 
 def prepare_data(data, test_size=0.2, random_state=42):
-    ''' Function to split data on train and test set'''
+    """Function to split data on train and test set"""
     X = data['Text']
     y = data['Class']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
@@ -59,7 +58,7 @@ def prepare_data(data, test_size=0.2, random_state=42):
 
 
 def encode(text, maxlen=MAXLEN):
-    ''' The function to encode dataset with BERT tokenizer'''
+    """The function to encode dataset with BERT tokenizer"""
     input_ids=[]
     attention_masks=[]
 
@@ -77,7 +76,7 @@ def encode(text, maxlen=MAXLEN):
 
 
 def build_model(input_shape=(64,), dense_units=32, dropout_rate=0.2):
-    ''' Creating model using BERT'''
+    """Creating model using BERT"""
     bert_model = TFBertModel.from_pretrained('bert-base-uncased')
     input_word_ids = tf.keras.Input(shape=input_shape,dtype='int32')
     attention_masks = tf.keras.Input(shape=input_shape,dtype='int32')
@@ -95,7 +94,7 @@ def build_model(input_shape=(64,), dense_units=32, dropout_rate=0.2):
 
 def train_model(model, X_train_input_ids, X_train_attention_masks, X_test_input_ids, 
                 X_test_attention_masks, y_train, y_test):
-    '''Function to training the model'''
+    """Function to training the model"""
     history = model.fit(
         [X_train_input_ids, X_train_attention_masks],
         y_train,
@@ -107,7 +106,7 @@ def train_model(model, X_train_input_ids, X_train_attention_masks, X_test_input_
 
 
 def plot_graphs(history, string):
-    '''Function for visualization of training'''
+    """Function for visualization of training"""
     plt.plot(history.history[string])
     plt.plot(history.history['val_'+string])
     plt.xlabel("Epochs")
@@ -117,7 +116,7 @@ def plot_graphs(history, string):
   
 
 def get_prediction(model, X_test_input_ids, X_test_attention_masks, y_test):
-    '''Function to get predictions on a test set'''
+    """Function to get predictions on a test set"""
     loss, accuracy = model.evaluate([X_test_input_ids, X_test_attention_masks], y_test)
     print('Test accuracy :', accuracy)
     return accuracy
