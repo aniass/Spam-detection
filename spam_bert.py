@@ -25,7 +25,7 @@ EPOCHS = 5
 
 
 def clean_data(df):
-    """Function to clean data"""
+    """Cleaning data and convert non numeric values"""
     df.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1, inplace=True)
     df.rename(columns={'v1': 'Class', 'v2': 'Text'}, inplace=True)
     df['Class'] = df['Class'].map({'ham': 0, 'spam': 1})
@@ -33,7 +33,7 @@ def clean_data(df):
 
 
 def text_preprocess(text):
-    """The function to remove punctuation, stopwords and apply stemming"""
+    """Remove punctuation, stopwords and apply stemming"""
     words = re.sub("[^a-zA-Z]", " ", text)
     words = [word.lower() for word in words.split() if word.lower()
              not in stop_words]
@@ -42,7 +42,7 @@ def text_preprocess(text):
 
 
 def read_data(path):
-    """Function to read text data"""
+    """Read and preprocess data"""
     data = pd.read_csv(path, encoding='latin-1')
     dataset = clean_data(data)
     dataset['Text'] = data['Text'].apply(text_preprocess)
@@ -50,7 +50,7 @@ def read_data(path):
 
 
 def prepare_data(data, test_size=0.2, random_state=42):
-    """Function to split data on train and test set"""
+    """Spliting data into train and test set"""
     X = data['Text']
     y = data['Class']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
@@ -58,7 +58,7 @@ def prepare_data(data, test_size=0.2, random_state=42):
 
 
 def encode(text, maxlen=MAXLEN):
-    """The function to encode dataset with BERT tokenizer"""
+    """Encoding dataset with BERT tokenizer"""
     input_ids=[]
     attention_masks=[]
 
@@ -94,7 +94,7 @@ def build_model(input_shape=(64,), dense_units=32, dropout_rate=0.2):
 
 def train_model(model, X_train_input_ids, X_train_attention_masks, X_test_input_ids, 
                 X_test_attention_masks, y_train, y_test):
-    """Function to training the model"""
+    """Training the model"""
     history = model.fit(
         [X_train_input_ids, X_train_attention_masks],
         y_train,
@@ -106,7 +106,7 @@ def train_model(model, X_train_input_ids, X_train_attention_masks, X_test_input_
 
 
 def plot_graphs(history, string):
-    """Function for visualization of training"""
+    """Visualization of training model"""
     plt.plot(history.history[string])
     plt.plot(history.history['val_'+string])
     plt.xlabel("Epochs")
@@ -116,7 +116,7 @@ def plot_graphs(history, string):
   
 
 def get_prediction(model, X_test_input_ids, X_test_attention_masks, y_test):
-    """Function to get predictions on a test set"""
+    """Getting predictions on a test set"""
     loss, accuracy = model.evaluate([X_test_input_ids, X_test_attention_masks], y_test)
     print('Test accuracy :', accuracy)
     return accuracy
