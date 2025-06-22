@@ -28,28 +28,27 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def clean_text(words):
+def clean_text(words: str) -> str:
     """The function to clean text"""
     words = re.sub("[^a-zA-Z]"," ", words)
     text = words.lower().split()                   
     return " ".join(text)
 
 
-def remove_stopwords(text):
+def remove_stopwords(text: str) -> str:
     """The function to removing stopwords"""
     stop_words = stopwords.words('english')
     text = [word.lower() for word in text.split() if word.lower() not in stop_words]
     return " ".join(text)
 
 
-def get_stemmer(stem_text):
+def get_stemmer(stem_text: str) -> str:
     """The function to apply stemming"""
     porter = PorterStemmer()
     stem_text = [porter.stem(word) for word in stem_text.split()]
     return " ".join(stem_text)
 
 
-# poprawic
 def preprocess_data(data: str) -> str:
     """Function to preprocess data"""
     data['Text'] = data['Text'].apply(clean_text)
