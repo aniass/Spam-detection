@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
 URL_DATA = 'data\spam.csv'
+CLEANED_DATA_PATH = r'data\spam_clean.csv'
 
 
 def read_data(path: str) -> pd.DataFrame:
@@ -64,4 +65,4 @@ if __name__ == '__main__':
     if not dataset.empty:
         print(dataset.shape)
         print(dataset.head(5))
-        dataset.to_csv(URL_DATA, encoding='utf-8')
+        dataset.to_csv(CLEANED_DATA_PATH, encoding='utf-8')
