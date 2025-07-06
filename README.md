@@ -16,6 +16,7 @@ The aim of the project was spam detection in SMS messages. The spam filtering is
 - Python script to use spam model - **spam_model.py**
 - Python script to use spam model with smote method - **spam_smote_model.py**
 - Python script to use spam model with BERT - **spam_bert.py**
+- Python script to clean data - **clean_data.py**
 - Python script to generate predictions from trained model - **predictions.py**
 - models - models used in the project.
 
@@ -46,6 +47,7 @@ To run this project use Jupyter Notebook or Google Colab.
 
 You can run the scripts in the terminal:
 
+    clean_data.py
     spam_model.py
     spam_smote_model.py
     spam_bert.py
